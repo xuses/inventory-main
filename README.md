@@ -39,7 +39,7 @@ Untuk tampilannya saya sudah pasang template admin `bootstrap v5` yaitu `sash ad
 #### :arrow_right: Clone Project / Download File
 Clone Project dengan perintah terminal `gitbash` sebagai berikut:
 ```
-git clone git@github.com:radhiant/laravel-inventoryweb.git
+git clone git@github.com:HariawanID/inventory-main.git
 ```
 Atau bisa klik tombol download Zip dan extrak file tersebut
 #### :arrow_right: Buat Database
