@@ -9,16 +9,16 @@
                 <div class="row">
                     <div class="col-md-7">
                         <div class="form-group">
-                            <label for="kode" class="form-label">Kode Tujuan <span class="text-danger">*</span></label>
-                            <input type="text" name="kode" readonly class="form-control">
+                            <label for="bk_tujuan" class="form-label">Kode Tujuan <span class="text-danger">*</span></label>
+                            <input type="text" name="bk_tujuan" readonly class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="nama" class="form-label">Nama Tujuan <span class="text-danger">*</span></label>
-                            <input type="text" name="nama" class="form-control">
+                            <label for="lokasi_nama" class="form-label">Nama Tujuan <span class="text-danger">*</span></label>
+                            <input type="text" name="lokasi_nama" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="alamat" class="form-label">Alamat Tujuan <span class="text-danger">*</span></label>
-                            <input type="text" name="alamat" class="form-control">
+                            <label for="lokasi_alamat" class="form-label">Alamat Tujuan <span class="text-danger">*</span></label>
+                            <input type="text" name="lokasi_alamat" class="form-control">
                         </div>
                         
                         
@@ -42,9 +42,9 @@
 @section('formTambahJS')
 <script>
     function checkForm() {
-        const kode = $("input[name='kode']").val();
-        const nama = $("input[name='nama']").val();
-        const alamat = $("input[name='alamat']").val();
+        const kode = $("input[name='bk_tujuan']").val();
+        const nama = $("input[name='lokasi_nama']").val();
+        const alamat = $("input[name='lokasi_alamat']").val();
         setLoading(true);
         resetValid();
         if (kode == "") {
@@ -67,19 +67,15 @@
         }
     }
     function submitForm() {
-        const kode = $("input[name='kode']").val();
-        const nama = $("input[name='nama']").val();
-        const alamat = $("input[name='alamat']").val();
+        const kode = $("input[name='bk_tujuan']").val();
+        const nama = $("input[name='lokasi_nama']").val();
+        const alamat = $("input[name='lokasi_alamat']").val();
         //const foto = $('#GetFile')[0].files;
         var fd = new FormData();
         // Append data 
-        //fd.append('foto', foto[0]);
-        fd.append('kode', kode);
-        fd.append('nama', nama);
-        //fd.append('jenistujuan', jenistujuan);
-        //fd.append('satuan', satuan);
-        //fd.append('merk', merk);
-        fd.append('alamat', alamat);
+        fd.append('bk_tujuan', kode);
+        fd.append('lokasi_nama', nama);
+        fd.append('lokasi_alamat', alamat);
         $.ajax({
             type: 'POST',
             url: "{{route('tujuan.store')}}",
@@ -99,25 +95,18 @@
         });
     }
     function resetValid() {
-        $("input[name='kode']").removeClass('is-invalid');
-        $("input[name='nama']").removeClass('is-invalid');
-        //$("select[name='jenistujuan']").removeClass('is-invalid');
-        //$("select[name='satuan']").removeClass('is-invalid');
-        //$("select[name='merk']").removeClass('is-invalid');
-        $("input[name='alamat']").removeClass('is-invalid');
+        $("input[name='bk_tujuan']").removeClass('is-invalid');
+        $("input[name='lokasi_nama']").removeClass('is-invalid');
+        $("input[name='lokasi_alamat']").removeClass('is-invalid');
     };
     function reset() {
         resetValid();
-        $("input[name='kode']").val('');
-        $("input[name='nama']").val('');
-        //$("select[name='jenistujuan']").val('');
-        //$("select[name='satuan']").val('');
-        //$("select[name='merk']").val('');
-        $("input[name='alamat']").val('');
-        //$("#outputImg").attr("src", "{{url('/assets/default/tujuan/image.png')}}");
-        //$("#GetFile").val('');
+        $("input[name='bk_tujuan']").val('');
+        $("input[name='lokasi_nama']").val('');
+        $("input[name='lokasi_alamat']").val('');
         setLoading(false);
     }
+    
     function setLoading(bool) {
         if (bool == true) {
             $('#btnLoader').removeClass('d-none');
@@ -127,45 +116,5 @@
             $('#btnLoader').addClass('d-none');
         }
     }
-    // function fileIsValid(fileName) {
-    //     var ext = fileName.match(/\.([^\.]+)$/)[1];
-    //     ext = ext.toLowerCase();
-    //     var isValid = true;
-    //     switch (ext) {
-    //         case 'png':
-    //         case 'jpeg':
-    //         case 'jpg':
-    //         case 'svg':
-    //             break;
-    //         default:
-    //             this.value = '';
-    //             isValid = false;
-    //     }
-    //     return isValid;
-    // }
-    // function VerifyFileNameAndFileSize() {
-    //     var file = document.getElementById('GetFile').files[0];
-    //     if (file != null) {
-    //         var fileName = file.name;
-    //         if (fileIsValid(fileName) == false) {
-    //             validasi('Format bukan gambar!', 'warning');
-    //             document.getElementById('GetFile').value = null;
-    //             return false;
-    //         }
-    //         var content;
-    //         var size = file.size;
-    //         if ((size != null) && ((size / (1024 * 1024)) > 3)) {
-    //             validasi('Ukuran Maximum 1 MB', 'warning');
-    //             document.getElementById('GetFile').value = null;
-    //             return false;
-    //         }
-    //         var ext = fileName.match(/\.([^\.]+)$/)[1];
-    //         ext = ext.toLowerCase();
-    //         // $(".custom-file-label").addClass("selected").html(file.name);
-    //         document.getElementById('outputImg').src = window.URL.createObjectURL(file);
-    //         return true;
-    //     } else
-    //         return false;
-    // }
 </script>
 @endsection

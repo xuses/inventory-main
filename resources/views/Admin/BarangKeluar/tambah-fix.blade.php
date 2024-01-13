@@ -16,28 +16,9 @@
                             <label for="tglkeluar" class="form-label">Tanggal Keluar <span class="text-danger">*</span></label>
                             <input type="text" name="tglkeluar" class="form-control datepicker-date" placeholder="">
                         </div>
-                          <div class="form-group">
-                            <label>Kode Tujuan <span class="text-danger me-1">*</span>
-                                <input type="hidden" id="status" value="false">
-                                <div class="spinner-border spinner-border-sm d-none" id="loaderkd" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                            </label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" autocomplete="off" name="kdtujuan" placeholder="">
-                                <button class="btn btn-primary-light" onclick="searchTujuan()" type="button"><i class="fe fe-search"></i></button>
-                                {{-- <button class="btn btn-success-light" onclick="modalBarang()" type="button"><i class="fe fe-box"></i></button> --}}
-                                <button class="btn btn-success-light" onclick="modalTujuan()" type="button"><i class="fe fe-box"></i></button>
-                            </div>
-                        </div>
                         <div class="form-group">
-                            <label>Nama Tujuan</label>
-                            <input type="text" class="form-control" id="nmtujuan" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Lokasi Alamat</label>
-                            <textarea readonly class="form-control" id="nmlokasi" cols="10"></textarea>
-                            {{-- <input type="text" cols="20" class="form-control" id="nmalamat" readonly> --}}
+                            <label for="tujuan" class="form-label">Tujuan</label>
+                            <input type="text" name="tujuan" class="form-control" placeholder="">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -52,7 +33,6 @@
                                 <input type="text" class="form-control" autocomplete="off" name="kdbarang" placeholder="">
                                 <button class="btn btn-primary-light" onclick="searchBarang()" type="button"><i class="fe fe-search"></i></button>
                                 <button class="btn btn-success-light" onclick="modalBarang()" type="button"><i class="fe fe-box"></i></button>
-                                {{-- <button class="btn btn-success-light" onclick="modalTujuan()" type="button"><i class="fe fe-box"></i></button> --}}
                             </div>
                         </div>
                         <div class="form-group">
@@ -105,53 +85,15 @@
 
     function modalBarang() {
         $('#modalBarang').modal('show');
-        // $('#modaldemo8').addClass('d-none');
-        $('input[name="param"]').val('tambah');
-        resetValid();
-        table3.ajax.reload();
-    }
-
-    function modalTujuan() {
-        $('#modalTujuan').modal('show');
-        // $('#modaldemo8').addClass('d-none');
+        $('#modaldemo8').addClass('d-none');
         $('input[name="param"]').val('tambah');
         resetValid();
         table2.ajax.reload();
     }
 
-    function searchTujuan() {
-        gettujuanbyid($('input[name="kdtujuan"]').val());
-        resetValid();
-    }
-
     function searchBarang() {
         getbarangbyid($('input[name="kdbarang"]').val());
         resetValid();
-    }
-
-    function gettujuanbyid(id) {
-        $("#loaderkd").removeClass('d-none');
-        $.ajax({
-            type: 'GET',
-            url: "{{ url('admin/tujuan/gettujuan') }}/" + id,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function(data) {
-                if (data.length > 0) {
-                    $("#loaderkd").addClass('d-none');
-                    $("#status").val("true");
-                    $("#nmtujuan").val(data[0].lokasi_nama);
-                    $("#nmlokasi").val(data[0].lokasi_alamat);
-                } else {
-                    $("#loaderkd").addClass('d-none');
-                    $("#status").val("false");
-                    $("#nmbarang").val('');
-                    $("#nmlokasi").val('');
-                    // $("#jenis").val('');
-                }
-            }
-        });
     }
 
     function getbarangbyid(id) {
@@ -166,9 +108,9 @@
                 if (data.length > 0) {
                     $("#loaderkd").addClass('d-none');
                     $("#status").val("true");
-                    $("#nmtujuan").val(data[0].barang_nama);
-                    $("#nmalamat").val(data[0].satuan_nama);
-                    // $("#jenis").val(data[0].jenisbarang_nama);
+                    $("#nmbarang").val(data[0].barang_nama);
+                    $("#satuan").val(data[0].satuan_nama);
+                    $("#jenis").val(data[0].jenisbarang_nama);
                 } else {
                     $("#loaderkd").addClass('d-none');
                     $("#status").val("false");
@@ -212,7 +154,7 @@
         const bkkode = $("input[name='bkkode']").val();
         const tglkeluar = $("input[name='tglkeluar']").val();
         const kdbarang = $("input[name='kdbarang']").val();
-        const tujuan = $("input[name='kdtujuan']").val();
+        const tujuan = $("input[name='tujuan']").val();
         const jml = $("input[name='jml']").val();
 
         $.ajax({
@@ -251,13 +193,9 @@
         $("input[name='bkkode']").val('');
         $("input[name='tglkeluar']").val('');
         $("input[name='kdbarang']").val('');
-        $("input[name='kdtujuan']").val('');
-        // $("input[name='nmtujuan']").val('');
-        // $("input[name='nmlokasi']").val('');
+        $("input[name='tujuan']").val('');
         $("input[name='jml']").val('0');
         $("#nmbarang").val('');
-        $("#nmtujuan").val('');
-        $("#nmlokasi").val('');
         $("#satuan").val('');
         $("#jenis").val('');
         $("#status").val('false');

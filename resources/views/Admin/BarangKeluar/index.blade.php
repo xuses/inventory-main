@@ -20,13 +20,13 @@
             <div class="card">
                 <div class="card-header justify-content-between">
                     <h3 class="card-title">Data</h3>
-                    @if ($hakTambah > 0)
+                    {{-- @if ($hakTambah > 0) --}}
                         <div>
                             <a class="modal-effect btn btn-primary-light" onclick="generateID()"
                                 data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#modaldemo8">Tambah Data
                                 <i class="fe fe-plus"></i></a>
                         </div>
-                    @endif
+                    {{-- @endif --}}
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -54,8 +54,8 @@
     @include('Admin.BarangKeluar.tambah')
     @include('Admin.BarangKeluar.edit')
     @include('Admin.BarangKeluar.hapus')
-    @include('Admin.BarangKeluar.barang')
     @include('Admin.BarangKeluar.tujuan')
+    @include('Admin.BarangKeluar.barang')
 
     <script>
         function generateID() {
@@ -68,7 +68,11 @@
             $("input[name='bkkodeU']").val(data.bk_kode);
             $("input[name='kdbarangU']").val(data.barang_kode);
             $("input[name='jmlU']").val(data.bk_jumlah);
-            //$("input[name='tujuanU']").val(data.bk_tujuan.replace(/_/g, ' '));
+            $("input[name='kdtujuanU']").val(data.bk_tujuan);
+            // $("input[id='nmtujuanU']").val(data.lokasi_nama);
+            $("#nmlokasiU").val(data.lokasi_alamat.replace(/_/g, ' '));
+            // nmtujuanU
+            $("#nmtujuanU").val(data.lokasi_nama.replace(/_/g, ' '));
 
             getbarangbyidU(data.barang_kode);
 

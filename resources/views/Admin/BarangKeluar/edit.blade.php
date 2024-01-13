@@ -34,6 +34,15 @@
                                 <button class="btn btn-success-light" onclick="modalTujuanU()" type="button"><i class="fe fe-box"></i></button>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label>Nama Tujuan</label>
+                            <input type="text" class="form-control" id="nmtujuanU" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Lokasi Alamat</label>
+                            <textarea readonly class="form-control" id="nmlokasiU" cols="10"></textarea>
+                            {{-- <input type="text" cols="20" class="form-control" id="nmalamat" readonly> --}}
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -97,6 +106,14 @@
         }
     });
 
+    function modalTujuanU() {
+        $('#modalTujuan').modal('show');
+        $('#Umodaldemo8').addClass('d-none');
+        $('input[name="param"]').val('ubah');
+        resetValidU();
+        table3.ajax.reload();
+    }
+
     function modalBarangU() {
         $('#modalBarang').modal('show');
         $('#Umodaldemo8').addClass('d-none');
@@ -105,9 +122,44 @@
         table2.ajax.reload();
     }
 
+    function searchTujuanU() {
+        gettujuanbyidU($('input[name="kdtujuanU"]').val());
+        resetValidU();
+    }
+
     function searchBarangU() {
         getbarangbyidU($('input[name="kdbarangU"]').val());
         resetValidU();
+    }
+
+    function gettujuanbyidU(id) {
+        $("#loadertuU").removeClass('d-none');
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('admin/tujuan/gettujuan') }}/" + id,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(data) {
+                if (data.length > 0) {
+                    $("#loadertuU").addClass('d-none');
+                    $("#statusTujuanU").val("true");
+                    $("#nmtujuanU").val(data[0].lokasi_nama);
+                    // $("#namaU").val(data[0].tujuan_nama);
+                    $("#alamatU").val(data[0].tujuan_alamat);
+                    // $("#satuanU").val(data[0].satuan_nama);
+                    //$("#jenisU").val(data[0].jenisbarang_nama);
+                } else {
+                    $("#loadertuU").addClass('d-none');
+                    $("#statusTujuanU").val("false");
+                    $("#kodeU").val('');
+                    $("#namaU").val('');
+                    $("#alamatU").val('');
+                    //$("#satuanU").val('');
+                    //$("#jenisU").val('');
+                }
+            }
+        });
     }
 
     function getbarangbyidU(id) {
@@ -125,12 +177,14 @@
                     $("#nmbarangU").val(data[0].barang_nama);
                     $("#satuanU").val(data[0].satuan_nama);
                     $("#jenisU").val(data[0].jenisbarang_nama);
+                    // $("#bk_tujuan").val(data[0].bk_tujuan);
                 } else {
                     $("#loaderkdU").addClass('d-none');
                     $("#statusU").val("false");
                     $("#nmbarangU").val('');
                     $("#satuanU").val('');
                     $("#jenisU").val('');
+                    // $("#bk_tujuan").val('');
                 }
             }
         });
@@ -143,54 +197,6 @@
         }
     });
 
-    function modalTujuanU() {
-        $('#modalTujuan').modal('show');
-        $('#Umodaldemo8').addClass('d-none');
-        $('input[name="param"]').val('ubah');
-        resetValidU();
-        table2.ajax.reload();
-    }
-
-    // 
-    
-    function searchTujuanU() {
-    gettujuanbyidU($('input[name="kdtujuanU"]').val());
-    resetValidU();
-
-    // Redirect ke view tujuan index
-    window.location.href = "{{ url('admin/barangkeluar/tujuan?pilih=true') }}";
-}
-
-
-    function gettujuanbyidU(id) {
-        $("#loadertuU").removeClass('d-none');
-        $.ajax({
-            type: 'GET',
-            url: "{{ url('admin/tujuan/gettujuan') }}/" + id,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function(data) {
-                if (data.length > 0) {
-                    $("#loadertuU").addClass('d-none');
-                    $("#statusTujuanU").val("true");
-                    $("#kodeU").val(data[0].tujuan_kode);
-                    $("#namaU").val(data[0].tujuan_nama);
-                    $("#alamatU").val(data[0].tujuan_alamat);
-                    //$("#satuanU").val(data[0].satuan_nama);
-                    //$("#jenisU").val(data[0].jenisbarang_nama);
-                } else {
-                    $("#loadertuU").addClass('d-none');
-                    $("#statusTujuanU").val("false");
-                    $("#kodeU").val('');
-                    $("#namaU").val('');
-                    $("#alamatU").val('');
-                    //$("#satuanU").val('');
-                    //$("#jenisU").val('');
-                }
-            }
-        });
-    }
 
     function checkFormU() {
         const tglkeluar = $("input[name='tglkeluarU']").val();
@@ -245,7 +251,7 @@
                 bkkode: bkkode,
                 tglkeluar: tglkeluar,
                 barang: kdbarang,
-                tujuan: tujuan,
+                tujuan: kdtujuan,
                 jml: jml
             },
             success: function(data) {

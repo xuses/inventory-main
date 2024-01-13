@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\AksesModel;
 use App\Models\Admin\BarangkeluarModel;
@@ -24,7 +25,11 @@ class BarangkeluarController extends Controller
     public function show(Request $request)
     {
         if ($request->ajax()) {
-            $data = BarangkeluarModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangkeluar.barang_kode')->orderBy('bk_id', 'DESC')->get();
+            $data = DB::table('tbl_barangkeluar')
+            ->join('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangkeluar.barang_kode')
+            ->join('tbl_lokasi', 'tbl_lokasi.bk_tujuan', '=', 'tbl_barangkeluar.bk_tujuan')
+            ->get();
+            // $data = BarangkeluarModel::leftJoin('tbl_barang', 'tbl_barang.barang_kode', '=', 'tbl_barangkeluar.barang_kode')->orderBy('bk_id', 'DESC')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('tgl', function ($row) {
@@ -33,7 +38,7 @@ class BarangkeluarController extends Controller
                     return $tgl;
                 })
                 ->addColumn('tujuan', function ($row) {
-                    $tujuan = $row->bk_tujuan == '' ? '-' : $row->bk_tujuan;
+                    $tujuan = $row->lokasi_nama == '' ? '-' : $row->lokasi_nama;
 
                     return $tujuan;
                 })
@@ -48,7 +53,9 @@ class BarangkeluarController extends Controller
                         "bk_kode" => $row->bk_kode,
                         "barang_kode" => $row->barang_kode,
                         "bk_tanggal" => $row->bk_tanggal,
-                        "bk_tujuan" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->bk_tujuan)),
+                        "lokasi_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_',$row->lokasi_nama)),
+                        "lokasi_alamat" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_',$row->lokasi_alamat)),
+                        "bk_tujuan" => $row->bk_tujuan,
                         "bk_jumlah" => $row->bk_jumlah
                     );
                     $button = '';
