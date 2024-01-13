@@ -317,6 +317,8 @@ $appreance = AppreanceModel::where('user_id', '=', Session::get('user')->user_id
 @yield('formEditJS')
 @yield('formHapusJS')
 @yield('formOtherJS')
+@yield('formsOtherJS')
+@yield('formOtherJS2')
 
 </body>
 

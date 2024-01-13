@@ -4,15 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\AksesModel;
-//use App\Models\Admin\TujuankeluarModel;
-//use App\Models\Admin\TujuanmasukModel;
+// use App\Models\Admin\CustomerModel;
 use App\Models\Admin\TujuanModel;
-//use App\Models\Admin\JenisTujuanModel;
-//use App\Models\Admin\MerkModel;
-//use App\Models\Admin\SatuanModel;
+use App\Models\Admin\BarangModel;
+use App\Models\Admin\BarangkeluarModel;
+use App\Models\Admin\BarangmasukModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class TujuanController extends Controller
@@ -20,110 +18,103 @@ class TujuanController extends Controller
     public function index()
     {
         $data["title"] = "Tujuan";
-        $data["hakTambah"] = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Tujuan', 'tbl_akses.akses_type' => 'create'))->count();
+        $data["hakTambah"] = AksesModel::leftJoin('tbl_menu', 'tbl_menu.menu_id', '=', 'tbl_akses.menu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_menu.menu_judul' => 'Lokasi', 'tbl_akses.akses_type' => 'create'))->count();
+        // $data["lokasi_nama"] =  TujuanModel::orderBy('lokasi_nama', 'DESC')->get();
         return view('Admin.Tujuan.index', $data);
     }
-
+    
     public function gettujuan($id)
     {
-        $data = TujuanModel::orderBy('tujuan_id')->get();
+        $data = TujuanModel::where('tbl_lokasi.bk_tujuan', '=', $id)->get();
         return json_encode($data);
     }
 
     public function show(Request $request)
     {
-        if ($request->ajax()) {
-
-            $data = TujuanModel::orderBy('tujuan_id', 'DESC')->get();
+        if (($request->ajax())) {
+            $data = TujuanModel::orderBy('lokasi_id', 'DESC')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('kode', function ($row) {
-                    $kode = $row->tujuan_kode == '' ? '-' : $row->tujuan_kode;
-
-                    return $kode;
+                ->addColumn('Tujuan', function ($row) {
+                    $tujuan = $row->bk_tujuan == '' ? '-' : $row->bk_tujuan;
+                    return $tujuan;
                 })
-                ->addColumn('nama', function ($row) {
-                    $nama = $row->tujuan_nama == '' ? '-' : $row->tujuan_nama;
-
-                    return $nama;
+                ->addColumn('Nama Tujuan', function ($row) {
+                    $nama_tujuan = $row->lokasi_nama == '' ? '-' : $row->lokasi_nama;
+                    return $nama_tujuan;
                 })
-                ->addColumn('alamat', function ($row) {
-                    $alamat = $row->tujuan_alamat == '' ? '-' : $row->tujuan_alamat;
-
-                    return $alamat;
+                ->addColumn('Alamat', function ($row) {
+                    $nama_tujuan = $row->lokasi_nama == '' ? '-' : $row->lokasi_nama;
+                    return $nama_tujuan;
                 })
                 ->addColumn('action', function ($row) {
                     $array = array(
-                        //"tujuan_id" => $row->tujuan_id,
-                        //"jenistujuan_id" => $row->jenistujuan_id,
-                        //"satuan_id" => $row->satuan_id,
-                        //"merk_id" => $row->merk_id,
-                        "tujuan_id" => $row->tujuan_id,
-                        "tujuan_kode" => $row->tujuan_kode,
-                        "tujuan_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->tujuan_nama)),
-                        "tujuan_alamat" => $row->tujuan_alamat,
-                        //"tujuan_stok" => $row->tujuan_stok,
-                        //"tujuan_gambar" => $row->tujuan_gambar,
+                        "lokasi_id" => $row->lokasi_id,
+                        "bk_tujuan" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->bk_tujuan)),
+                        "lokasi_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->lokasi_nama)),
+                        "lokasi_alamat" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_',$row->lokasi_alamat))
                     );
                     $button = '';
-                    $hakEdit = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Tujuan', 'tbl_akses.akses_type' => 'update'))->count();
-                    $hakDelete = AksesModel::leftJoin('tbl_submenu', 'tbl_submenu.submenu_id', '=', 'tbl_akses.submenu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_submenu.submenu_judul' => 'Tujuan', 'tbl_akses.akses_type' => 'delete'))->count();
+                    $hakEdit = AksesModel::leftJoin('tbl_menu', 'tbl_menu.menu_id', '=', 'tbl_akses.menu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_menu.menu_judul' => 'Lokasi', 'tbl_akses.akses_type' => 'update'))->count();
+                    $hakDelete = AksesModel::leftJoin('tbl_menu', 'tbl_menu.menu_id', '=', 'tbl_akses.menu_id')->where(array('tbl_akses.role_id' => Session::get('user')->role_id, 'tbl_menu.menu_judul' => 'Lokasi', 'tbl_akses.akses_type' => 'delete'))->count();
                     if ($hakEdit > 0 && $hakDelete > 0) {
                         $button .= '
-                        <div class="g-2">
-                        <a class="btn modal-effect text-primary btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Umodaldemo8" data-bs-toggle="tooltip" data-bs-original-title="Edit" onclick=update(' . json_encode($array) . ')><span class="fe fe-edit text-success fs-14"></span></a>
-                        <a class="btn modal-effect text-danger btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Hmodaldemo8" onclick=hapus(' . json_encode($array) . ')><span class="fe fe-trash-2 fs-14"></span></a>
-                        </div>
-                        ';
+                                    <div class="g-2">
+                                    <a class="btn modal-effect text-primary btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Umodaldemo8" data-bs-toggle="tooltip" data-bs-original-title="Edit" onclick=update(' . json_encode($array) . ')><span class="fe fe-edit text-success fs-14"></span></a>
+                                    <a class="btn modal-effect text-danger btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Hmodaldemo8" onclick=hapus(' . json_encode($array) . ')><span class="fe fe-trash-2 fs-14"></span></a>
+                                    </div>
+                                    ';
                     } else if ($hakEdit > 0 && $hakDelete == 0) {
                         $button .= '
-                        <div class="g-2">
-                            <a class="btn modal-effect text-primary btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Umodaldemo8" data-bs-toggle="tooltip" data-bs-original-title="Edit" onclick=update(' . json_encode($array) . ')><span class="fe fe-edit text-success fs-14"></span></a>
-                        </div>
-                        ';
+                                    <div class="g-2">
+                                    <a class="btn modal-effect text-primary btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Umodaldemo8" data-bs-toggle="tooltip" data-bs-original-title="Edit" onclick=update(' . json_encode($array) . ')><span class="fe fe-edit text-success fs-14"></span></a>
+                                    </div>
+                                    ';
                     } else if ($hakEdit == 0 && $hakDelete > 0) {
                         $button .= '
-                        <div class="g-2">
-                        <a class="btn modal-effect text-danger btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Hmodaldemo8" onclick=hapus(' . json_encode($array) . ')><span class="fe fe-trash-2 fs-14"></span></a>
-                        </div>
-                        ';
+                                    <div class="g-2">
+                                    <a class="btn modal-effect text-danger btn-sm" data-bs-effect="effect-super-scaled" data-bs-toggle="modal" href="#Hmodaldemo8" onclick=hapus(' . json_encode($array) . ')><span class="fe fe-trash-2 fs-14"></span></a>
+                                    </div>
+                                    ';
                     } else {
                         $button .= '-';
                     }
-
                     return $button;
                 })
-                ->rawColumns(['action', 'nama', 'alamat'])->make(true);
+                ->make(true);
         }
     }
 
     public function listtujuan(Request $request)
     {
         if ($request->ajax()) {
-            $data = TujuanModel::orderBy('tujuan_id')->get();
+            // $data = BarangModel::leftJoin('tbl_jenisbarang', 'tbl_jenisbarang.jenisbarang_id', '=', 'tbl_barang.jenisbarang_id')->leftJoin('tbl_satuan', 'tbl_satuan.satuan_id', '=', 'tbl_barang.satuan_id')->leftJoin('tbl_merk', 'tbl_merk.merk_id', '=', 'tbl_barang.merk_id')->orderBy('barang_id', 'DESC')->get();
+            $data = TujuanModel::orderBy('lokasi_id', 'DESC')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('kode', function ($row) {
-                    $kode = $row->tujuan_kode == '' ? '-' : $row->tujuan_kode;
-
-                    return $kode;
+                ->addColumn('Tujuan', function ($row) {
+                    $tujuan = $row->bk_tujuan == '' ? '-' : $row->bk_tujuan;
+                    return $tujuan;
                 })
-                ->addColumn('nama', function ($row) {
-                    $nama = $row->tujuan_nama == '' ? '-' : $row->tujuan_nama;
 
-                    return $nama;
+                ->addColumn('Nama Tujuan', function ($row) {
+                    $nama_tujuan = $row->lokasi_nama == '' ? '-' : $row->lokasi_nama;
+                    return $nama_tujuan;
                 })
-                ->addColumn('alamat', function ($row) {
-                    $alamat = $row->tujuan_alamat == '' ? '-' : $row->tujuan_alamat;
 
-                    return $alamat;
+                ->addColumn('Alamat', function ($row) {
+                    $nama_tujuan = $row->lokasi_nama == '' ? '-' : $row->lokasi_nama;
+                    return $nama_tujuan;
                 })
+
                 ->addColumn('action', function ($row) use ($request) {
                     $array = array(
-                        "tujuan_kode" => $row->tujuan_kode,
-                        "tujuan_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->tujuan_nama)),
-                        "tujuan_alamat" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->tujuan_alamat)),
+                        "lokasi_id" => $row->lokasi_id,
+                        "bk_tujuan" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->bk_tujuan)),
+                        "lokasi_nama" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $row->lokasi_nama)),
+                        "lokasi_alamat" => trim(preg_replace('/[^A-Za-z0-9-]+/', '_',$row->lokasi_alamat))
                     );
+
                     $button = '';
                     if ($request->get('param') == 'tambah') {
                         $button .= '
@@ -141,37 +132,21 @@ class TujuanController extends Controller
 
                     return $button;
                 })
-                ->rawColumns(['action', 'kode', 'nama', 'alamat'])->make(true);
+                ->make(true);
         }
     }
 
+
     public function proses_tambah(Request $request)
     {
-        //$img = "";
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->nama)));
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lokasi_nama)));
 
-        //upload image
-        // if ($request->file('foto') == null) {
-        //     $img = "image.png";
-        // } else {
-        //     $image = $request->file('foto');
-        //     $image->storeAs('public/tujuan/', $image->hashName());
-        //     $img = $image->hashName();
-        // }
-
-
-        //create
+        //insert data
         TujuanModel::create([
-            //'tujuan_gambar' => $img,
-            //'jenistujuan_id' => $request->jenistujuan,
-            //'satuan_id' => $request->satuan,
-            //'merk_id' => $request->merk,
-            'tujuan_kode' => $request->kode,
-            'tujuan_nama' => $request->nama,
-            'tujuan_slug' => $slug,
-            'tujuan_alamat' => $request->alamat,
-            //'tujuan_stok' => 0,
-
+            'bk_tujuan' => $request->bk_tujuan,
+            'lokasi_nama' => $request->lokasi_nama,
+            'lokasi_slug' => $slug,
+            'lokasi_alamat' => $request->lokasi_alamat,
         ]);
 
         return response()->json(['success' => 'Berhasil']);
@@ -179,44 +154,15 @@ class TujuanController extends Controller
 
     public function proses_ubah(Request $request, TujuanModel $tujuan)
     {
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->alamat)));
 
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->nama)));
-
-        //check if image is uploaded
-        // if ($request->hasFile('foto')) {
-
-        //     //upload new image
-        //     $image = $request->file('foto');
-        //     $image->storeAs('public/tujuan', $image->hashName());
-
-        //     //delete old image
-        //     Storage::delete('public/tujuan/' . $tujuan->tujuan_gambar);
-
-            //update data with new image
+        //update data
         $tujuan->update([
-            //'tujuan_gambar'  => $image->hashName(),
-            //'jenistujuan_id' => $request->jenistujuan,
-            //'satuan_id' => $request->satuan,
-            //'merk_id' => $request->merk,
-            'tujuan_kode' => $request->kode,
-            'tujuan_nama' => $request->nama,
-            'tujuan_slug' => $slug,
-            'tujuan_alamat' => $request->alamat,
-            //'tujuan_stok' => $request->stok,
+            'bk_tujuan' => $request->bk_tujuan,
+            'customer_slug' => $slug,
+            'customer_notelp' => $request->notelp,
+            'customer_alamat' => $request->alamat,
         ]);
-        // } else {
-        //     //update data without image
-        //     $tujuan->update([
-        //         'jenistujuan_id' => $request->jenistujuan,
-        //         'satuan_id' => $request->satuan,
-        //         'merk_id' => $request->merk,
-        //         'tujuan_kode' => $request->kode,
-        //         'tujuan_nama' => $request->nama,
-        //         'tujuan_slug' => $slug,
-        //         'tujuan_harga' => $request->harga,
-        //         'tujuan_stok' => $request->stok,
-        //     ]);
-        // }
 
         return response()->json(['success' => 'Berhasil']);
     }
@@ -224,12 +170,11 @@ class TujuanController extends Controller
 
     public function proses_hapus(Request $request, TujuanModel $tujuan)
     {
-        //delete image
-        //Storage::delete('public/tujuan/' . $tujuan->tujuan_gambar);
-
         //delete
         $tujuan->delete();
 
         return response()->json(['success' => 'Berhasil']);
     }
+
+
 }

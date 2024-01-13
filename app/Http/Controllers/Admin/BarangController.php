@@ -52,6 +52,7 @@ class BarangController extends Controller
 
                     return $img;
                 })
+                
                 ->addColumn('jenisbarang', function ($row) {
                     $jenisbarang = $row->jenisbarang_id == '' ? '-' : $row->jenisbarang_nama;
 

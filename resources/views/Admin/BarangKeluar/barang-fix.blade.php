@@ -3,12 +3,11 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title">Pilih Barang</h6>
-                <button onclick="resetB('tambah')" aria-label="Close" class="btn-close"><span aria-hidden="true">&times;</span></button>
+                <h6 class="modal-title">Pilih Barang</h6><button onclick="resetB('tambah')" aria-label="Close" class="btn-close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body p-4 pb-5">
                 <input type="hidden" value="tambah" name="param">
-                <input type="hidden" id="randskey">
+                <input type="hidden" id="randkey">
                 <div class="table-responsive">
                     <table id="table-2" width="100%" class="table table-bordered text-nowrap border-bottom dataTable no-footer dtr-inline collapsed">
                         <thead>
@@ -31,9 +30,9 @@
     </div>
 </div>
 
-@section('formsOtherJS')
+@section('formOtherJS')
 <script>
-    document.getElementById('randskey').value = makeid(10);
+    document.getElementById('randkey').value = makeid(10);
 
     function resetB() {
         param = $('input[name="param"]').val();
@@ -48,7 +47,7 @@
     }
 
     function pilihBarang(data) {
-        const key = $("#randskey").val();
+        const key = $("#randkey").val();
         $("#status").val("true");
         $("input[name='kdbarang']").val(data.barang_kode);
         $("#nmbarang").val(data.barang_nama.replace(/_/g, ' '));
@@ -59,7 +58,7 @@
     }
 
     function pilihBarangU(data) {
-        const key = $("#randskey").val();
+        const key = $("#randkey").val();
         $("#statusU").val("true");
         $("input[name='kdbarangU']").val(data.barang_kode);
         $("#nmbarangU").val(data.barang_nama.replace(/_/g, ' '));

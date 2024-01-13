@@ -51,7 +51,7 @@
 <script>
     function generateID(){
         id = new Date().getTime();
-        $("input[name='kode']").val("TJN-"+id);
+        $("input[name='bk_tujuan']").val("LKS-"+id);
     }
     function update(data){
         $("input[name='idtujuanU']").val(data.tujuan_id);
@@ -60,7 +60,7 @@
         $("input[name='alamatU']").val(data.tujuan_alamat.replace(/_/g, ' '));
     }
     function hapus(data) {
-        $("input[name='idtujuan']").val(data.tujuan_id);
+        $("input[name='idtujuan']").val(data.lokasi_id);
         $("#vtujuan").html("tujuan " + "<b>" + data.tujuan_nama.replace(/_/g, ' ') + "</b>");
     }
     function validasi(judul, status) {
@@ -105,16 +105,16 @@
                     searchable: false
                 },
                 {
-                    data: 'tujuan_kode',
-                    name: 'tujuan_kode',
+                    data: 'bk_tujuan',
+                    name: 'bk_tujuan',
                 },
                 {
-                    data: 'tujuan_nama',
-                    name: 'tujuan_nama',
+                    data: 'lokasi_nama',
+                    name: 'lokasi_nama',
                 },
                 {
-                    data: 'tujuan_alamat',
-                    name: 'tujuan_alamat'
+                    data: 'lokasi_alamat',
+                    name: 'lokasi_alamat'
                 },
                 {
                     data: 'action',

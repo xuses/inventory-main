@@ -9,6 +9,7 @@ use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\SatuanController;
 use App\Http\Controllers\Admin\TujuanController;
+use App\Http\Controllers\Admin\LokasiController;
 use App\Http\Controllers\Master\AksesController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -90,7 +91,7 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::post('/admin/barang/proses_hapus/{barang}', [BarangController::class, 'proses_hapus']);
     });
 
-    Route::middleware(['checkRoleUser:/customer,submenu'])->group(function () {
+    Route::middleware(['checkRoleUser:/customer,menu'])->group(function () {
         // Customer
         Route::resource('/admin/customer', \App\Http\Controllers\Admin\CustomerController::class);
         Route::get('/admin/customer/show/', [CustomerController::class, 'show'])->name('customer.getcustomer');
@@ -99,13 +100,15 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::post('/admin/customer/proses_hapus/{customer}', [CustomerController::class, 'proses_hapus']);
     });
 
-    Route::middleware(['checkRoleUser:/customer,submenu'])->group(function () {
+    Route::middleware(['checkRoleUser:/customer,menu'])->group(function () {
         // Tujuan
         Route::resource('/admin/tujuan', \App\Http\Controllers\Admin\TujuanController::class);
         Route::get('/admin/tujuan/show/', [TujuanController::class, 'show'])->name('tujuan.gettujuan');
         Route::post('/admin/tujuan/proses_tambah/', [TujuanController::class, 'proses_tambah'])->name('tujuan.store');
         Route::post('/admin/tujuan/proses_ubah/{tujuan}', [TujuanController::class, 'proses_ubah']);
         Route::post('/admin/tujuan/proses_hapus/{tujuan}', [TujuanController::class, 'proses_hapus']);
+        Route::get('/admin/tujuan/listtujuan/{param}', [TujuanController::class, 'listtujuan']);
+        Route::get('/admin/tujuan/gettujuan/{id}', [TujuanController::class, 'gettujuan']);
     });
 
     Route::middleware(['checkRoleUser:/barang-masuk,submenu'])->group(function () {
@@ -117,8 +120,6 @@ Route::group(['middleware' => 'userlogin'], function () {
         Route::post('/admin/barang-masuk/proses_hapus/{barangmasuk}', [BarangmasukController::class, 'proses_hapus']);
         Route::get('/admin/barang/getbarang/{id}', [BarangController::class, 'getbarang']);
         Route::get('/admin/barang/listbarang/{param}', [BarangController::class, 'listbarang']);
-        Route::get('/admin/tujuan/gettujuan/{id}', [TujuanController::class, 'gettujuan']);
-        Route::get('/admin/tujuan/listtujuan/{param}', [TujuanController::class, 'listtujuan']);
     });
 
     Route::middleware(['checkRoleUser:/lap-barang-masuk,submenu'])->group(function () {
